@@ -1,5 +1,3 @@
-import json
-from urllib import request
 import requests
 from .config import WX_AGENTID, WX_CORPID, WX_CORPSECRET
 
