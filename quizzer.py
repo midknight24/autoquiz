@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-from notion import NotionAPI
-from config import QUIZ_PAGE_ID, PROFICIENCY_MAP
+from .notion import NotionAPI
+from .config import QUIZ_PAGE_ID, PROFICIENCY_MAP
 
 class AutoQuizzer:
 

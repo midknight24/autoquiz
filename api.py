@@ -1,5 +1,5 @@
 from datetime import datetime
-from quizzer import AutoQuizzer
+from .quizzer import AutoQuizzer
 from flask import Flask, request, redirect
 from cryptography.fernet import Fernet
 from config import SECRET, SECRET_EXPIRE,NOTION_PUB
