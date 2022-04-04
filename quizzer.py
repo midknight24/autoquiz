@@ -1,24 +1,35 @@
+from datetime import datetime, timedelta
 from notion import NotionAPI
-from config import QUIZ_PAGE_ID
+from config import QUIZ_PAGE_ID, PROFICIENCY_MAP
 
-def fetch_quiz():
-    n = NotionAPI()
-    dbs = n.get_quizdbs(QUIZ_PAGE_ID)
-    quizzes = []
-    for db in dbs:
+class AutoQuizzer:
 
-        q0 = n.get_earliest_asked(db)
-        if q0:
-            quizzes.append(n.quiz_summary(q0))
+    def fetch_quiz(self):
+        n = NotionAPI()
+        dbs = n.get_quizdbs(QUIZ_PAGE_ID)
+        quizzes = []
+        for db in dbs:
 
-        q1 = n.get_earliest_never_asked(db)
-        if q1:
-            quizzes.append(n.quiz_summary(q1))
-    print([q['time_prio'] for q in quizzes])
-    quiz = min(quizzes, key=lambda x: x['time_prio'])
-    return quiz
+            q0 = n.get_earliest_asked(db)
+            if q0:
+                quizzes.append(n.quiz_summary(q0))
 
+            q1 = n.get_earliest_never_asked(db)
+            if q1:
+                quizzes.append(n.quiz_summary(q1))
+        print([q['time_prio'] for q in quizzes])
+        quiz = min(quizzes, key=lambda x: x['time_prio'])
+        return quiz
 
-if __name__ == '__main__':
-    q = fetch_quiz()
-    print(q)
+    def update_quiz(self, quiz_id, proficiency, can_answer):
+        n = NotionAPI()
+        if can_answer:
+            p = max(proficiency + 1, len(PROFICIENCY_MAP) - 1)
+        else:
+            p = min(proficiency - 1, 0)
+        inv = timedelta(seconds = PROFICIENCY_MAP[p])
+        next = datetime.now() + inv
+        return n.update_quiz(quiz_id, p, next)
+            
+        
+

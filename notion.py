@@ -90,5 +90,14 @@ class NotionAPI:
             'time_prio': next_time if next_time else created_time
         }
 
-        
-
+    def update_quiz(self, quiz_id, proficiency, next):
+        url = f'{self.baseurl}/pages/{quiz_id}'
+        data = {
+            "properties": {
+                "Proficiency": proficiency,
+                "Next": {
+                    "start": next.astimezone().isoformat()
+                }
+            }
+        }
+        return self.s.patch(url, json=data)
