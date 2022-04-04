@@ -1,10 +1,10 @@
 import json
 from venv import create
 import pytz
-from utils import nested_get
+from .utils import nested_get
 import requests
 from datetime import datetime
-from config import NOTION_API_VERSION, NOTION_SECRET, NOTION_API_BASE
+from .config import NOTION_API_VERSION, NOTION_SECRET, NOTION_API_BASE
 
 class NotionAPI:
     def __init__(self, token=NOTION_SECRET):
