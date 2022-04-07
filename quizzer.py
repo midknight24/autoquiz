@@ -17,19 +17,20 @@ class AutoQuizzer:
             q1 = n.get_earliest_never_asked(db)
             if q1:
                 quizzes.append(n.quiz_summary(q1))
-        print([q['time_prio'] for q in quizzes])
         quiz = min(quizzes, key=lambda x: x['time_prio'])
         return quiz
 
-    def update_quiz(self, quiz_id, proficiency, can_answer):
+    def update_quiz(self, quiz_id, proficiency, can_answer, ans_count, fail_count):
         n = NotionAPI()
         if can_answer:
-            p = max(proficiency + 1, len(PROFICIENCY_MAP) - 1)
+            p = min(proficiency + 1, len(PROFICIENCY_MAP) - 1)
+            ans_count += 1
         else:
-            p = min(proficiency - 1, 0)
+            p = max(proficiency - 1, 0)
+            fail_count += 1
         inv = timedelta(seconds = PROFICIENCY_MAP[p])
         next = datetime.now() + inv
-        return n.update_quiz(quiz_id, p, next)
+        return n.update_quiz(quiz_id, p, next, ans_count, fail_count)
             
         
 

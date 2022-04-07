@@ -1,12 +1,12 @@
 from datetime import datetime
 from .quizzer import AutoQuizzer
-from flask import Flask, request, redirect
+from flask import Blueprint, request, redirect
 from cryptography.fernet import Fernet
 from .config import SECRET, SECRET_EXPIRE,NOTION_PUB
 
-app = Flask(__name__)
+bp = Blueprint('quiz', __name__, url_prefix='/quiz')
 
-@app.route('/quiz', methods=['POST'])
+@bp.route('/', methods=['GET'])
 def update_quiz():
     token = request.args.get('token', type=str)
     f = Fernet(SECRET)
@@ -22,9 +22,10 @@ def update_quiz():
     can_answer = bool(request.args.get('can_answer', type=int))
     prof = request.args.get('proficiency', type=int)
     quiz_id = request.args.get('quiz_id', type=str)
+    ans_count = request.args.get('ans_count', type=int)
+    fail_count = request.args.get('fail_count', type=int)
     quizzer = AutoQuizzer()
-    r = quizzer.update_quiz(quiz_id, prof, can_answer)
+    r = quizzer.update_quiz(quiz_id, prof, can_answer, ans_count, fail_count)
     if r.status_code != 200:
         return f'Update Quiz Failed! \n {r.json()}', 500
     return redirect(f'{NOTION_PUB}/{quiz_id}')
-

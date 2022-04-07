@@ -86,17 +86,21 @@ class NotionAPI:
             'next_time': next_time,
             'proficiency': nested_get(question, 'properties.Proficiency.number'),
             'difficulty': nested_get(question, 'properties.Difficulty.select.name'),
+            'answer_count': nested_get(question, 'properties.Answer Count.number'),
+            "can't_answer_count": nested_get(question, "properties.Can't Answer Count.number"),
             'time_prio': next_time if next_time else created_time
         }
 
-    def update_quiz(self, quiz_id, proficiency, next):
+    def update_quiz(self, quiz_id, proficiency, next, ans_count, fail_count):
         url = f'{self.baseurl}/pages/{quiz_id}'
         data = {
             "properties": {
                 "Proficiency": proficiency,
                 "Next": {
                     "start": next.astimezone().isoformat()
-                }
+                },
+                "Answer Count": ans_count,
+                "Can't Answer Count": fail_count
             }
         }
         return self.s.patch(url, json=data)
