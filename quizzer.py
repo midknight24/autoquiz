@@ -32,5 +32,4 @@ class AutoQuizzer:
         next = datetime.now() + inv
         return n.update_quiz(quiz_id, p, next, ans_count, fail_count)
             
-        
 

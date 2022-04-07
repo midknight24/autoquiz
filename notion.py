@@ -87,7 +87,7 @@ class NotionAPI:
             'proficiency': nested_get(question, 'properties.Proficiency.number'),
             'difficulty': nested_get(question, 'properties.Difficulty.select.name'),
             'answer_count': nested_get(question, 'properties.Answer Count.number'),
-            "can't_answer_count": nested_get(question, "properties.Can't Answer Count.number"),
+            "fail_count": nested_get(question, "properties.Can't Answer Count.number"),
             'time_prio': next_time if next_time else created_time
         }
 
