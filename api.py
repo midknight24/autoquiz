@@ -28,4 +28,4 @@ def update_quiz():
     r = quizzer.update_quiz(quiz_id, prof, can_answer, ans_count, fail_count)
     if r.status_code != 200:
         return f'Update Quiz Failed! \n {r.json()}', 500
-    return redirect(f'{NOTION_PUB}/{quiz_id}')
+    return redirect(f'{NOTION_PUB}/{quiz_id.replace("-", "")}')
