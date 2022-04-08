@@ -13,8 +13,8 @@ def gen_token():
 
 def format_quiz(quiz):
     return f"""Quiz: {quiz['title']}
-        难度：{quiz['difficulty']} | 当前熟练度：p{quiz['proficiency']}
-        已问：{quiz['answer_count']}次 | 不懂：{quiz['fail_count']}次"""
+难度：{quiz['difficulty']} | 当前熟练度：p{quiz['proficiency']}
+已问：{quiz['answer_count']}次 | 不懂：{quiz['fail_count']}次"""
 
 def format_button(quiz, can_answer):
     token = gen_token()
