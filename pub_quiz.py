@@ -7,7 +7,7 @@ from cryptography.fernet import Fernet
 
 def gen_token():
     f = Fernet(SECRET)
-    time = datetime.now()
+    time = datetime.now().astimezone()
     return f.encrypt(time.isoformat().encode()).decode()
 
 
