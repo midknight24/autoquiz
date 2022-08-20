@@ -3,8 +3,8 @@ from sqlite3 import Timestamp
 from .quizzer import AutoQuizzer
 from flask import Blueprint, request, redirect
 from cryptography.fernet import Fernet
-from .config import SECRET, SECRET_EXPIRE,NOTION_PUB, WX_CORPID
-from WXBizMsgCrypt import WXBizMsgCrypt
+from .config import SECRET, SECRET_EXPIRE,NOTION_PUB, WX_CORPID, CALLBACK_TOKEN, AESKEY
+from .WXBizMsgCrypt.WXBizMsgCrypt import WXBizMsgCrypt
 
 bp = Blueprint('quiz', __name__, url_prefix='/quiz')
 
@@ -38,8 +38,8 @@ def callback():
     timestamp = request.args.get('timestamp', type=int)
     nonce = request.args.get('nonce')
     echostr = request.args.get('echostr')
-    sToken = ''
-    sEncodingAES = ''
+    sToken = CALLBACK_TOKEN
+    sEncodingAES = AESKEY
     wxcpt = WXBizMsgCrypt(sToken, sEncodingAES, WX_CORPID)
     ret,sEchoStr = wxcpt.VerifyURL(msg_signature, timestamp, nonce, echostr)
     if ret != 0:
