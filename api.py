@@ -35,7 +35,7 @@ def update_quiz():
 @bp.route('/callback', methods=['GET'])
 def callback():
     msg_signature = request.args.get('msg_signature', type=str)
-    timestamp = request.args.get('timestamp', type=int)
+    timestamp = request.args.get('timestamp', type=str)
     nonce = request.args.get('nonce')
     echostr = request.args.get('echostr')
     sToken = CALLBACK_TOKEN
