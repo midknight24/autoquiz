@@ -4,7 +4,7 @@ from .quizzer import AutoQuizzer
 from flask import Blueprint, request, redirect
 from cryptography.fernet import Fernet
 from .config import SECRET, SECRET_EXPIRE,NOTION_PUB, WX_CORPID, CALLBACK_TOKEN, AESKEY
-from WXBizMsgCrypt import WXBizMsgCrypt
+from .WXBizMsgCrypt.WXBizMsgCrypt import WXBizMsgCrypt
 
 bp = Blueprint('quiz', __name__, url_prefix='/quiz')
 
