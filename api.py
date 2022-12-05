@@ -5,10 +5,13 @@ from flask import Blueprint, request, redirect
 from cryptography.fernet import Fernet
 from .config import SECRET, SECRET_EXPIRE,NOTION_PUB, WX_CORPID, CALLBACK_TOKEN, AESKEY
 from .WXBizMsgCrypt.WXBizMsgCrypt import WXBizMsgCrypt
+import xml.etree.cElementTree as ET
+from .wechat import WXWorkAPI
+from .pub_quiz import gen_token
 
 bp = Blueprint('quiz', __name__, url_prefix='/quiz')
 
-# @bp.route('/', methods=['GET'])
+@bp.route('/', methods=['GET'])
 def update_quiz():
     token = request.args.get('token', type=str)
     f = Fernet(SECRET)
@@ -32,7 +35,7 @@ def update_quiz():
         return f'Update Quiz Failed! \n {r.json()}', 500
     return redirect(f'{NOTION_PUB}/{quiz_id.replace("-", "")}')
 
-@bp.route('/callback', methods=['GET'])
+@bp.route('/callback', methods=['GET', 'POST'])
 def callback():
     msg_signature = request.args.get('msg_signature', type=str)
     timestamp = request.args.get('timestamp', type=str)
@@ -41,7 +44,21 @@ def callback():
     sToken = CALLBACK_TOKEN
     sEncodingAES = AESKEY
     wxcpt = WXBizMsgCrypt(sToken, sEncodingAES, WX_CORPID)
-    ret,sEchoStr = wxcpt.VerifyURL(msg_signature, timestamp, nonce, echostr)
-    if ret != 0:
-        return str(ret)
-    return sEchoStr
+    if request.method == 'GET':
+        ret,sEchoStr = wxcpt.VerifyURL(msg_signature, timestamp, nonce, echostr)
+        if ret != 0:
+            return str(ret)
+        return sEchoStr
+    elif request.method == 'POST':
+        ret, sMsg = wxcpt.DecryptMsg(request.data, msg_signature, timestamp, nonce)
+        if ret != 0:
+            print(ret)
+            return str(ret)
+        xml_tree = ET.fromstring(sMsg)
+        title, U = xml_tree.find("EventKey").text.split("|")
+        url = U + f'&token={gen_token()}'
+        response_code = xml_tree.find("ResponseCode").text
+        from_username = xml_tree.find("FromUserName").text
+        wx = WXWorkAPI(WXCPT=wxcpt)
+        wx.update_card(title, from_username, response_code, url)
+        return "ok", 200

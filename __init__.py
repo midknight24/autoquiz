@@ -9,7 +9,7 @@ def configure_logging(log_folder):
     if not os.path.exists(log_folder):
         os.makedirs(log_folder)
     logfile = os.path.join(log_folder, 'autoquiz.log')
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     handler = RotatingFileHandler(
         logfile, maxBytes=1024*1000, backupCount=5, encoding='UTF-8')
     fmt = logging.Formatter(
